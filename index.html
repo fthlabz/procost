@@ -2,107 +2,120 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fthlabz ProCost</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ProCost Cloud</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h1><i class="fa-solid fa-terminal"></i> Fthlabz_ProCost_v1.0</h1>
-            <div class="status">Sistem: <span style="color:#0f0;">ONLINE</span></div>
-        </header>
+    <header>
+        <div class="brand">
+            <i class="fa-solid fa-cloud-bolt text-neon"></i> Fthlabz<span class="light">Cloud</span>
+        </div>
+        <div id="statusBadge" class="status-badge">Bağlanıyor...</div>
+    </header>
 
-        <div class="main-grid">
+    <main>
+        
+        <div id="page-calc" class="page active">
             
-            <div class="panel database-panel">
-                <h2><i class="fa-solid fa-database"></i> Veri Girişi</h2>
-                <div class="input-group">
-                    <input type="text" id="newProdName" placeholder="Ürün Adı (Örn: Çimento)" autocomplete="off">
-                    <input type="number" id="newProdPrice" placeholder="Fiyat (₺)" step="0.01">
-                    <select id="newProdUnit">
-                        <option value="Adet">Adet</option>
-                        <option value="Kg">Kg</option>
-                        <option value="m²">m²</option>
-                        <option value="m³">m³</option>
-                        <option value="Ton">Ton</option>
-                        <option value="Saat">Saat</option>
-                        <option value="Gün">Gün</option>
-                        <option value="Litre">Litre</option>
-                    </select>
-                </div>
-                <button id="saveToDbBtn" class="btn-neon"><i class="fa-solid fa-save"></i> DATAYA KAYDET</button>
-
-                <div class="db-list-wrapper">
-                    <h3>Kayıtlı Kalemler</h3>
-                    <ul id="databaseList">
-                        </ul>
-                </div>
-            </div>
-
-            <div class="panel calc-panel">
-                <h2><i class="fa-solid fa-calculator"></i> Hesaplayıcı</h2>
+            <div class="card">
+                <label class="label-tiny">ÜRÜN SEÇİN</label>
+                <select id="productSelect" class="input-big">
+                    <option value="">Yükleniyor...</option>
+                </select>
                 
-                <div class="calc-row">
-                    <label>Ürün Seç:</label>
-                    <select id="productSelect">
-                        <option value="">-- Veritabanından Seç --</option>
-                    </select>
-                </div>
-
-                <div class="info-display">
-                    <div class="info-box">
-                        <span>Birim Fiyat</span>
-                        <strong id="displayPrice">0.00 ₺</strong>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="label-tiny">BİRİM FİYAT</span>
+                        <span id="dispPrice" class="value-text">0.00 ₺</span>
                     </div>
-                    <div class="info-box">
-                        <span>Birim</span>
-                        <strong id="displayUnit">-</strong>
+                    <div class="info-item">
+                        <span class="label-tiny">ÖZELLİK/BİRİM</span>
+                        <span id="dispDesc" class="value-text">-</span>
                     </div>
                 </div>
 
-                <div class="calc-row">
-                    <label>Miktar Gir:</label>
-                    <input type="number" id="quantityInput" placeholder="0" class="big-input">
+                <label class="label-tiny" style="margin-top:10px;">MİKTAR (ADET/METRE)</label>
+                <div class="input-row">
+                    <input type="number" id="qtyInput" placeholder="0" class="input-big text-center">
+                    <button id="addBtn" class="btn-primary"><i class="fa-solid fa-plus"></i> EKLE</button>
+                </div>
+                <div class="preview-total">
+                    <small>ARA TOPLAM:</small> <span id="lineTotal">0.00 ₺</span>
+                </div>
+            </div>
+
+            <div class="bill-area">
+                <div class="bill-header">
+                    <h3>TEKLİF LİSTESİ</h3>
+                    <button onclick="clearBill()" class="btn-text-danger">Temizle</button>
+                </div>
+                
+                <div id="billList" class="bill-list">
+                    <div class="empty-state">Liste boş. Ürün ekleyin.</div>
                 </div>
 
-                <div class="result-display">
-                    <span>TOPLAM:</span>
-                    <span id="lineTotal" class="neon-text">0.00 ₺</span>
+                <div class="grand-total-box">
+                    <span>TOPLAM TUTAR</span>
+                    <span id="grandTotal">0.00 ₺</span>
                 </div>
 
-                <button id="addToBillBtn" class="btn-action">LİSTEYE EKLE <i class="fa-solid fa-arrow-down"></i></button>
+                <div class="share-actions">
+                    <button onclick="shareWhatsapp()" class="btn-whatsapp">
+                        <i class="fa-brands fa-whatsapp"></i> WhatsApp Gönder
+                    </button>
+                    <button onclick="printOffer()" class="btn-print">
+                        <i class="fa-solid fa-print"></i> PDF / Yazdır
+                    </button>
+                </div>
             </div>
         </div>
 
-        <div class="panel bill-panel">
-            <div class="bill-header">
-                <h2><i class="fa-solid fa-file-invoice"></i> Oluşturulan Teklif Listesi</h2>
-                <button onclick="clearBill()" class="btn-danger-text">Listeyi Temizle</button>
+        <div id="page-data" class="page">
+            <div class="card">
+                <h2><i class="fa-solid fa-database"></i> Veri Tabanı (data.json)</h2>
+                <p class="desc-text">Buradan eklediğin ürünler GitHub'a anında kaydedilir ve tüm cihazlarında güncellenir.</p>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Ürün Adı</label>
+                        <input type="text" id="dbName" placeholder="Örn: Çimento">
+                    </div>
+                    <div class="form-group">
+                        <label>Özellik (Birim)</label>
+                        <input type="text" id="dbDesc" placeholder="Örn: 25 KG">
+                    </div>
+                    <div class="form-group full">
+                        <label>Fiyat (₺)</label>
+                        <input type="number" id="dbPrice" placeholder="0.00">
+                    </div>
+                </div>
+                <button onclick="saveToCloudDb()" id="saveBtn" class="btn-success">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> KAYDET & GÜNCELLE
+                </button>
             </div>
-            
-            <table id="billTable">
-                <thead>
-                    <tr>
-                        <th>Ürün</th>
-                        <th>Fiyat x Miktar</th>
-                        <th>Toplam</th>
-                        <th>Sil</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    </tbody>
-            </table>
 
-            <div class="grand-total">
-                GENEL TOPLAM: <span id="grandTotal">0.00 ₺</span>
+            <div class="db-list-container">
+                <h3>Mevcut Kayıtlar</h3>
+                <ul id="dbListUi" class="db-list"></ul>
             </div>
         </div>
 
-    </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <button onclick="switchPage('page-calc')" class="nav-btn active" id="nav-calc">
+            <i class="fa-solid fa-calculator"></i>
+            <span>Hesapla</span>
+        </button>
+        <button onclick="switchPage('page-data')" class="nav-btn" id="nav-data">
+            <i class="fa-solid fa-server"></i>
+            <span>Veri Girişi</span>
+        </button>
+    </nav>
 
     <script src="script.js"></script>
 </body>

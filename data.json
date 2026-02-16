@@ -19,5 +19,12 @@
     "val": "1",
     "type": "Adet",
     "price": 15
+  },
+  {
+    "id": 1771251743373,
+    "name": "Alüminyum",
+    "val": "1",
+    "type": "m²",
+    "price": 300
   }
 ]

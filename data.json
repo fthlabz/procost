@@ -5,5 +5,12 @@
     "val": "25",
     "type": "KG",
     "price": 300
+  },
+  {
+    "id": 1771250963512,
+    "name": "Demir",
+    "val": "1",
+    "type": "KG",
+    "price": 50
   }
 ]

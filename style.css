@@ -1,108 +1,275 @@
+/* =========================================
+   1. TEMEL AYARLAR & RENKLER
+   ========================================= */
 :root {
-    --bg: #0f172a;
-    --card: #1e293b;
-    --text: #f1f5f9;
-    --text-muted: #94a3b8;
-    --primary: #3b82f6;
-    --success: #10b981;
-    --neon: #00ff9d;
-    --danger: #ef4444;
-    --whatsapp: #25D366;
+    --bg-color: #0f172a;       /* Ana Arka Plan (Koyu Lacivert) */
+    --card-bg: #1e293b;        /* Kart Rengi */
+    --border-color: #334155;   /* Çizgi Rengi */
+    --text-main: #f8fafc;      /* Ana Yazı Rengi */
+    --text-muted: #94a3b8;     /* Soluk Yazı Rengi */
+    
+    --primary: #3b82f6;        /* Mavi Buton */
+    --success: #10b981;        /* Yeşil (Kaydet) */
+    --danger: #ef4444;         /* Kırmızı (Sil) */
+    --neon: #00ff9d;           /* Neon Vurgular */
+    --whatsapp: #25D366;       /* WhatsApp Yeşili */
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+    -webkit-tap-highlight-color: transparent; /* Mobilde tıklama gölgesini kaldırır */
+}
 
-body { background-color: var(--bg); color: var(--text); padding-bottom: 80px; /* Nav için boşluk */ }
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    padding-bottom: 90px; /* Alt menü için boşluk */
+    overflow-x: hidden;
+}
 
-/* HEADER */
+/* =========================================
+   2. HEADER (ÜST KISIM)
+   ========================================= */
 header {
-    background: var(--card); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); border-bottom: 1px solid #334155; position: sticky; top: 0; z-index: 50;
+    background: rgba(30, 41, 59, 0.95);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
 }
-.brand { font-weight: 900; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; }
-.text-neon { color: var(--neon); }
+
+.brand {
+    font-weight: 900;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+}
+
+.text-neon { color: var(--neon); text-shadow: 0 0 10px rgba(0, 255, 157, 0.4); }
 .light { font-weight: 300; color: var(--text-muted); }
 
-.status-badge { font-size: 0.7rem; font-weight: bold; padding: 4px 8px; border-radius: 12px; background: #334155; color: #cbd5e1; }
+.status-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 20px;
+    background: var(--border-color);
+    color: var(--text-muted);
+}
 .status-badge.online { background: rgba(16, 185, 129, 0.2); color: var(--success); border: 1px solid var(--success); }
 .status-badge.error { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+.status-badge.loading { color: var(--primary); }
 
-/* MAIN LAYOUT */
-main { padding: 15px; max-width: 600px; margin: 0 auto; }
-.page { display: none; animation: fadeIn 0.3s ease; }
+/* =========================================
+   3. GENEL DÜZEN VE KARTLAR
+   ========================================= */
+main {
+    padding: 15px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.page {
+    display: none;
+    animation: fadeIn 0.3s ease-out;
+}
 .page.active { display: block; }
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* CARDS */
-.card { background: var(--card); padding: 20px; border-radius: 16px; border: 1px solid #334155; margin-bottom: 20px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); }
-h2 { font-size: 1.1rem; margin-bottom: 10px; color: var(--text); }
-.desc-text { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px; }
+.card {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 20px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
 
-/* INPUTS */
-.label-tiny { font-size: 0.7rem; font-weight: 800; color: var(--text-muted); letter-spacing: 1px; display: block; margin-bottom: 5px; }
-.input-big { width: 100%; background: #0f172a; border: 1px solid #334155; color: white; padding: 12px; border-radius: 10px; font-size: 1.1rem; outline: none; margin-bottom: 10px; }
+h2 { font-size: 1.2rem; margin-bottom: 15px; color: white; display: flex; align-items: center; gap: 10px; }
+h3 { font-size: 1rem; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+
+/* =========================================
+   4. HESAP MAKİNESİ ALANI
+   ========================================= */
+.label-tiny {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.input-big {
+    width: 100%;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    color: white;
+    padding: 15px;
+    border-radius: 12px;
+    font-size: 1.3rem; /* Büyük yazı */
+    outline: none;
+    margin-bottom: 15px;
+    height: 60px;
+}
 .input-big:focus { border-color: var(--primary); }
 
-.info-grid { display: flex; gap: 10px; margin-bottom: 10px; }
-.info-item { flex: 1; background: #0f172a; padding: 10px; border-radius: 10px; border: 1px solid #334155; text-align: center; }
-.value-text { display: block; font-weight: 700; font-size: 1.1rem; color: var(--neon); }
+.info-grid { display: flex; gap: 10px; margin-bottom: 15px; }
+.info-item {
+    flex: 1;
+    background: var(--bg-color);
+    padding: 15px 10px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    text-align: center;
+}
+.value-text { display: block; font-weight: 700; font-size: 1.2rem; color: var(--neon); margin-top: 5px; }
 
 .input-row { display: flex; gap: 10px; }
-.preview-total { text-align: right; color: var(--text-muted); font-size: 0.9rem; margin-top: 5px; }
-.preview-total span { color: var(--text); font-weight: bold; margin-left: 5px; }
+.preview-total { text-align: right; color: var(--text-muted); font-size: 0.9rem; margin-top: 5px; font-weight: bold; }
+.preview-total span { color: white; font-size: 1.1rem; margin-left: 5px; }
 
-/* BUTTONS */
-button { cursor: pointer; border: none; font-weight: 700; border-radius: 10px; transition: 0.2s; }
-.btn-primary { background: var(--primary); color: white; padding: 0 20px; flex: 1; }
-.btn-success { background: var(--success); color: white; width: 100%; padding: 15px; font-size: 1rem; margin-top: 10px; }
-.btn-text-danger { background: none; color: var(--danger); padding: 5px; font-size: 0.8rem; }
-.btn-whatsapp { background: var(--whatsapp); color: white; width: 100%; padding: 14px; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px; }
-.btn-print { background: #334155; color: white; width: 100%; padding: 14px; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px; }
+/* =========================================
+   5. FORM ALANI (MOBİL İYİLEŞTİRMESİ) - BURASI DÜZELTİLDİ
+   ========================================= */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr; /* Sağ taraf (Birim) biraz daha geniş */
+    gap: 15px;
+    margin-bottom: 20px;
+}
 
-/* BILL AREA */
-.bill-area { background: var(--card); border-radius: 16px; padding: 20px; border: 1px solid #334155; }
-.bill-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 10px; }
-.bill-list { min-height: 100px; margin-bottom: 20px; }
-.empty-state { text-align: center; color: var(--text-muted); padding: 30px 0; font-size: 0.9rem; font-style: italic; }
-
-.bill-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #334155; font-size: 0.9rem; }
-.bill-item:last-child { border: none; }
-.bill-item-left b { display: block; color: white; }
-.bill-item-left span { font-size: 0.8rem; color: var(--text-muted); }
-.bill-item-right { text-align: right; }
-.bill-item-right .price { color: var(--neon); font-weight: bold; }
-.del-item { color: var(--danger); margin-left: 10px; cursor: pointer; }
-
-.grand-total-box { background: #0f172a; padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border: 1px solid var(--neon); }
-.grand-total-box span:first-child { color: var(--text-muted); font-size: 0.9rem; font-weight: 700; }
-.grand-total-box span:last-child { color: var(--neon); font-size: 1.5rem; font-weight: 900; }
-
-/* DATABASE LIST */
-.db-list { list-style: none; margin-top: 20px; }
-.db-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #0f172a; margin-bottom: 8px; border-radius: 8px; border: 1px solid #334155; }
-.db-actions { display: flex; gap: 10px; }
-.btn-icon { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 5px; color: white; }
-.bg-red { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
-
-/* FORMS */
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.form-group { margin-bottom: 5px; }
 .form-group.full { grid-column: span 2; }
-.form-group input { width: 100%; background: #0f172a; border: 1px solid #334155; color: white; padding: 10px; border-radius: 8px; margin-top: 5px; }
 
-/* BOTTOM NAV */
-.bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 1px solid #334155; display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; }
-.nav-btn { background: none; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; font-size: 0.8rem; gap: 5px; }
-.nav-btn i { font-size: 1.2rem; }
+/* Etiketler (Ürün Adı vb.) */
+.form-group label {
+    display: block;
+    font-size: 0.95rem;   /* Okunaklı Boyut */
+    font-weight: 700;
+    color: #cbd5e1;       /* Parlak gri */
+    margin-bottom: 8px;
+}
+
+/* Kutular (Input ve Select) */
+.form-group input, 
+.input-select {
+    width: 100%;
+    background: #0f172a;  /* Koyu zemin */
+    border: 1px solid #334155;
+    color: white;
+    
+    /* MOBİL İÇİN KRİTİK AYARLAR */
+    font-size: 1.25rem;   /* Yazı Büyüdü (~20px) */
+    height: 55px;         /* Kutu Yükseldi (Parmakla basması kolay) */
+    padding: 0 15px;      /* İç boşluk */
+    border-radius: 12px;  /* Yuvarlak köşeler */
+    outline: none;
+    transition: 0.2s;
+    font-weight: 500;
+}
+
+/* Kutuya Tıklayınca */
+.form-group input:focus, 
+.input-select:focus {
+    border-color: var(--primary);
+    background: #1e293b;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* =========================================
+   6. BUTONLAR
+   ========================================= */
+button { cursor: pointer; border: none; font-weight: 700; border-radius: 12px; transition: 0.2s; font-size: 1rem; }
+button:active { transform: scale(0.98); }
+button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.btn-primary { background: var(--primary); color: white; flex: 1; height: 60px; font-size: 1.1rem; }
+.btn-success { background: var(--success); color: white; width: 100%; padding: 18px; font-size: 1.1rem; margin-top: 10px; display: flex; justify-content: center; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
+.btn-text-danger { background: none; color: var(--danger); padding: 5px 10px; font-size: 0.85rem; }
+
+.share-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+.btn-whatsapp { background: var(--whatsapp); color: white; padding: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.btn-print { background: var(--border-color); color: white; padding: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+/* =========================================
+   7. LİSTELER (Fiş ve Veritabanı)
+   ========================================= */
+.bill-area { background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color); padding: 0; overflow: hidden; }
+.bill-header { padding: 15px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); }
+
+.bill-list, .db-list { list-style: none; max-height: 400px; overflow-y: auto; }
+.empty-state { text-align: center; padding: 30px; color: var(--text-muted); font-style: italic; }
+
+.bill-item, .db-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px; border-bottom: 1px solid var(--border-color);
+}
+.bill-item:last-child { border-bottom: none; }
+
+.bill-item-left b, .db-item strong { display: block; color: white; font-size: 1rem; margin-bottom: 4px; }
+.bill-item-left span, .db-item span { font-size: 0.85rem; color: var(--text-muted); }
+
+.price { color: var(--neon); font-weight: bold; font-size: 1.1rem; }
+.del-item, .btn-icon {
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 8px; color: var(--danger); background: rgba(239, 68, 68, 0.1);
+    cursor: pointer;
+}
+
+.grand-total-box {
+    background: var(--bg-color); padding: 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid var(--border-color);
+    margin-top: 0;
+}
+.grand-total-box span:first-child { color: var(--text-muted); font-weight: 700; }
+.grand-total-box span:last-child { color: var(--neon); font-size: 1.6rem; font-weight: 900; }
+
+/* =========================================
+   8. ALT NAVİGASYON (MOBİL MENÜ)
+   ========================================= */
+.bottom-nav {
+    position: fixed; bottom: 0; left: 0; width: 100%;
+    background: rgba(15, 23, 42, 0.95);
+    border-top: 1px solid var(--border-color);
+    display: flex; justify-content: space-around;
+    padding: 10px 0; z-index: 999;
+    backdrop-filter: blur(10px);
+    padding-bottom: env(safe-area-inset-bottom); /* iPhone çentiği için */
+}
+
+.nav-btn {
+    background: none; color: var(--text-muted);
+    display: flex; flex-direction: column; align-items: center;
+    font-size: 0.75rem; gap: 6px;
+    width: 80px;
+}
+.nav-btn i { font-size: 1.4rem; margin-bottom: 2px; }
 .nav-btn.active { color: var(--primary); }
+.nav-btn.active i { transform: translateY(-2px); transition: 0.2s; }
 
-/* PRINT MODE */
+/* =========================================
+   9. YAZDIRMA (PRINT) MODU
+   ========================================= */
 @media print {
     body { background: white; color: black; padding: 0; }
-    .bottom-nav, .share-actions, header, #page-data, .card { display: none !important; }
-    .bill-area { border: none; box-shadow: none; }
-    .bill-item-left b { color: black; }
+    .bottom-nav, .share-actions, header, #page-data, .card, .btn-text-danger { display: none !important; }
+    .bill-area { border: none; box-shadow: none; padding: 0; }
+    .bill-item, .grand-total-box { border-bottom: 1px solid #ccc; color: black; background: white; }
+    .price, .grand-total-box span:last-child { color: black; }
     #page-calc { display: block !important; }
-    .bill-header h3 { font-size: 20pt; }
-    .empty-state { display: none; }
+    .del-item { display: none; }
 }

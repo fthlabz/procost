@@ -19,5 +19,12 @@
     "val": "1",
     "type": "Adet",
     "price": 15
+  },
+  {
+    "id": 1771251030341,
+    "name": "Kum",
+    "val": "1",
+    "type": "m³",
+    "price": 5
   }
 ]

@@ -1,37 +1,30 @@
 // =========================================================
-// ⚙️ AYARLAR (GitHub Bağlantısı)
+// ⚙️ AYARLAR
 // =========================================================
 
-// GÜVENLİK: Token'ı iki parça halinde yazıyoruz ki GitHub otomatik silmesin.
 const token_part_1 = "ghp_"; 
-// AŞAĞIYA KENDİ GİZLİ KODUNUN GERİ KALANINI YAPIŞTIR:
+// BURAYA KENDİ GİZLİ KODUNU YAZ:
 const token_part_2 = "P0M8pwZh09kDuOWAhVLM83ehoaRetk3geQvf"; 
 
 const CONFIG = {
-    USER: "fthlabz",      // Senin Kullanıcı Adın
-    REPO: "procost",      // Senin Depo Adın
-    FILE: "data.json",    // Kayıt Dosyası
-    TOKEN: token_part_1 + token_part_2 // Otomatik birleştirir
+    USER: "fthlabz",      // GitHub Kullanıcı Adın
+    REPO: "procost",      // Depo Adın
+    FILE: "data.json",    // Dosya Adı
+    TOKEN: token_part_1 + token_part_2
 };
 
-// =========================================================
-// 🚀 UYGULAMA MANTIĞI (Dokunmana Gerek Yok)
 // =========================================================
 
 let productDb = [];
 let billList = [];
 let fileSha = null; 
 
-// Sayfa Yüklendiğinde Başlat
 document.addEventListener('DOMContentLoaded', () => {
     initApp();
-    
-    // Navigasyon Butonları
     document.getElementById('nav-calc').addEventListener('click', () => switchPage('page-calc'));
     document.getElementById('nav-data').addEventListener('click', () => switchPage('page-data'));
 });
 
-// 1. BAŞLATMA
 async function initApp() {
     updateStatus("Veriler Çekiliyor...", "loading");
     await fetchFromCloud();
@@ -39,128 +32,108 @@ async function initApp() {
     renderDbList();
 }
 
-// 2. GITHUB'DAN VERİ ÇEK (GET)
+// GITHUB'DAN ÇEK
 async function fetchFromCloud() {
     try {
         const url = `https://api.github.com/repos/${CONFIG.USER}/${CONFIG.REPO}/contents/${CONFIG.FILE}`;
-        const response = await fetch(url, {
-            headers: { 'Authorization': `token ${CONFIG.TOKEN}` },
-            cache: "no-store"
-        });
-
-        if (!response.ok) throw new Error("Dosya Henüz Yok veya Token Hatalı");
-
+        const response = await fetch(url, { headers: { 'Authorization': `token ${CONFIG.TOKEN}` }, cache: "no-store" });
+        if (!response.ok) throw new Error("Dosya Yok");
         const data = await response.json();
-        fileSha = data.sha; // Dosya kimliğini al (Güncelleme için şart)
-
-        // Türkçe karakter sorunu olmasın diye özel çözümleme
+        fileSha = data.sha;
         const content = decodeURIComponent(escape(window.atob(data.content)));
         productDb = JSON.parse(content);
-
         updateStatus("Sistem: ONLINE", "online");
     } catch (error) {
-        console.error(error);
         updateStatus("Veri Yok / Yeni Başlangıç", "error");
-        productDb = []; // Hata varsa boş başla
+        productDb = [];
     }
 }
 
-// 3. GITHUB'A KAYDET (PUT)
+// GITHUB'A KAYDET (TAM İSTEDİĞİN GİBİ)
 async function saveToCloudDb() {
     const btn = document.getElementById('saveBtn');
     const originalText = btn.innerHTML;
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Kaydediliyor...';
     btn.disabled = true;
 
-    // Formdan verileri al
+    // GİRDİLERİ AL
     const name = document.getElementById('dbName').value;
-    const desc = document.getElementById('dbDesc').value; // Birim/Özellik
+    const val = document.getElementById('dbVal').value; // Örn: 25
+    const type = document.getElementById('dbType').value; // Örn: KG
     const price = parseFloat(document.getElementById('dbPrice').value);
 
-    if(!name || !price) {
-        alert("Lütfen İsim ve Fiyat giriniz!");
+    if(!name || !price || !val) {
+        alert("Lütfen tüm alanları doldurun!");
         btn.innerHTML = originalText;
         btn.disabled = false;
         return;
     }
 
-    // Listeye ekle
+    // Listeye ekle: Artık "25" ve "KG" ayrı ayrı tutuluyor ama birleşik de kullanılabilecek
     productDb.push({
         id: Date.now(),
         name: name,
-        desc: desc,
+        val: val,    // Sayısal Değer (25)
+        type: type,  // Birim Tipi (KG)
         price: price
     });
 
     try {
-        // Türkçe karakter destekli Base64 çevrimi
         const content = btoa(unescape(encodeURIComponent(JSON.stringify(productDb, null, 2))));
-
         const url = `https://api.github.com/repos/${CONFIG.USER}/${CONFIG.REPO}/contents/${CONFIG.FILE}`;
         
-        const bodyData = {
-            message: "Fthlabz App: Yeni Ürün Eklendi",
-            content: content,
-            sha: fileSha // Eğer dosya varsa SHA zorunludur
-        };
-
         const response = await fetch(url, {
             method: 'PUT',
-            headers: {
-                'Authorization': `token ${CONFIG.TOKEN}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(bodyData)
+            headers: { 'Authorization': `token ${CONFIG.TOKEN}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: "Update", content: content, sha: fileSha })
         });
 
         if(response.ok) {
             const resData = await response.json();
-            fileSha = resData.content.sha; // Yeni SHA'yı güncelle
-            alert("✅ Ürün Veritabanına Kaydedildi!");
+            fileSha = resData.content.sha;
+            alert("✅ Ürün Veritabanına İşlendi!");
             
             // Temizlik
             document.getElementById('dbName').value = "";
-            document.getElementById('dbDesc').value = "";
+            document.getElementById('dbVal').value = "";
             document.getElementById('dbPrice').value = "";
+            // dbType'ı sıfırlamaya gerek yok, son seçilen kalabilir veya Adet'e dönebilir.
             
             renderDropdown();
             renderDbList();
-        } else {
-            throw new Error("GitHub Kayıt Hatası!");
-        }
+        } else throw new Error("Kayıt Hatası");
     } catch (error) {
-        alert("Hata Oluştu: " + error.message);
-        // Hata durumunda eklenen son ürünü geri al (Rollback)
-        productDb.pop();
+        alert("Hata: " + error.message);
     } finally {
         btn.innerHTML = originalText;
         btn.disabled = false;
     }
 }
 
-// 4. LİSTELERİ GÜNCELLEME
+// DROPDOWN DOLDUR
 function renderDropdown() {
     const select = document.getElementById('productSelect');
     select.innerHTML = '<option value="">-- Ürün Seçiniz --</option>';
-    
     productDb.forEach((prod, index) => {
         const opt = document.createElement('option');
         opt.value = index;
-        opt.text = `${prod.name}`;
+        // GÖRÜNÜM: Çimento (25 KG)
+        opt.text = `${prod.name} (${prod.val} ${prod.type})`; 
         select.appendChild(opt);
     });
 }
 
+// KAYIT LİSTESİ
 function renderDbList() {
     const list = document.getElementById('dbListUi');
     list.innerHTML = "";
-    
     productDb.forEach((prod, index) => {
         const li = document.createElement('li');
         li.className = 'db-item';
+        // LİSTE GÖRÜNÜMÜ: Çimento | 25 KG | 300 TL
         li.innerHTML = `
             <div>
-                <strong>${prod.name}</strong> <span style="color:#888">(${prod.desc})</span><br>
+                <strong>${prod.name}</strong> <span style="color:#888">(${prod.val} ${prod.type})</span><br>
                 <span class="text-neon">${formatMoney(prod.price)}</span>
             </div>
             <div class="db-actions">
@@ -171,39 +144,25 @@ function renderDbList() {
     });
 }
 
-// Veritabanından Silme
 async function deleteFromDb(index) {
-    if(confirm("Bu ürünü silip GitHub'ı güncellemek istiyor musun?")) {
+    if(confirm("Bu ürünü silmek istiyor musun?")) {
         productDb.splice(index, 1);
-        
-        // Silme işlemi için sahte bir kayıt isteği göndererek dosyayı güncelliyoruz
-        // (UI'da form boş olduğu için sadece listeyi kaydeder)
-        
-        const btn = document.getElementById('saveBtn'); 
-        btn.innerHTML = 'Siliniyor...';
-        
+        const btn = document.getElementById('saveBtn'); btn.innerHTML = 'Siliniyor...';
         try {
             const content = btoa(unescape(encodeURIComponent(JSON.stringify(productDb, null, 2))));
             const url = `https://api.github.com/repos/${CONFIG.USER}/${CONFIG.REPO}/contents/${CONFIG.FILE}`;
-            
             await fetch(url, {
                 method: 'PUT',
                 headers: { 'Authorization': `token ${CONFIG.TOKEN}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: "Ürün Silindi", content: content, sha: fileSha })
-            }).then(r => r.json()).then(d => { fileSha = d.content.sha; });
-            
-            renderDropdown();
-            renderDbList();
-            alert("🗑️ Ürün Silindi.");
-        } catch(e) {
-            alert("Silme Hatası");
-        } finally {
-            btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> KAYDET & GÜNCELLE';
-        }
+                body: JSON.stringify({ message: "Delete", content: content, sha: fileSha })
+            }).then(r => r.json()).then(d => fileSha = d.content.sha);
+            renderDropdown(); renderDbList();
+        } catch(e) { alert("Hata"); }
+        finally { btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> KAYDET & GÜNCELLE'; }
     }
 }
 
-// 5. HESAPLAMA MANTIĞI
+// HESAPLAMA MANTIĞI
 const productSelect = document.getElementById('productSelect');
 const qtyInput = document.getElementById('qtyInput');
 
@@ -212,7 +171,8 @@ productSelect.addEventListener('change', () => {
     if(idx !== "") {
         const p = productDb[idx];
         document.getElementById('dispPrice').innerText = formatMoney(p.price);
-        document.getElementById('dispDesc').innerText = p.desc;
+        // EKRANA YAZ: "25 KG"
+        document.getElementById('dispUnit').innerText = `${p.val} ${p.type}`;
         calcLine();
     }
 });
@@ -228,17 +188,16 @@ function calcLine() {
     }
 }
 
-// Listeye Ekle Butonu
 document.getElementById('addBtn').addEventListener('click', () => {
     const idx = productSelect.value;
     const qty = parseFloat(qtyInput.value);
-
-    if(idx === "" || !qty) return alert("Ürün ve Miktar Seçin!");
+    if(idx === "" || !qty) return alert("Eksik bilgi!");
 
     const p = productDb[idx];
+    
     billList.push({
         name: p.name,
-        desc: p.desc,
+        fullUnit: `${p.val} ${p.type}`, // Fişte: 25 KG
         price: p.price,
         qty: qty,
         total: p.price * qty
@@ -249,7 +208,6 @@ document.getElementById('addBtn').addEventListener('click', () => {
     document.getElementById('lineTotal').innerText = "0.00 ₺";
 });
 
-// Fatura Listesini Çiz
 function renderBill() {
     const container = document.getElementById('billList');
     const grandEl = document.getElementById('grandTotal');
@@ -259,18 +217,17 @@ function renderBill() {
         grandEl.innerText = "0.00 ₺";
         return;
     }
-
     container.innerHTML = "";
     let grandTotal = 0;
-
     billList.forEach((item, index) => {
         grandTotal += item.total;
         const div = document.createElement('div');
         div.className = 'bill-item';
+        // FİŞ TASARIMI
         div.innerHTML = `
             <div class="bill-item-left">
                 <b>${item.name}</b>
-                <span>${item.qty} Adet (${item.desc})</span>
+                <span>${item.qty} Adet (${item.fullUnit})</span>
             </div>
             <div class="bill-item-right">
                 <div class="price">${formatMoney(item.total)}</div>
@@ -279,38 +236,22 @@ function renderBill() {
         `;
         container.appendChild(div);
     });
-
     grandEl.innerText = formatMoney(grandTotal);
 }
 
-function removeFromBill(index) {
-    billList.splice(index, 1);
-    renderBill();
-}
+function removeFromBill(index) { billList.splice(index, 1); renderBill(); }
+function clearBill() { billList = []; renderBill(); }
 
-function clearBill() {
-    billList = [];
-    renderBill();
-}
-
-// 6. WHATSAPP PAYLAŞIM
 window.shareWhatsapp = function() {
-    if(billList.length === 0) return alert("Liste boş, paylaşılacak bir şey yok!");
-
-    let text = `*Fthlabz Teklif Formu*\n📅 Tarih: ${new Date().toLocaleDateString()}\n------------------\n`;
+    if(billList.length === 0) return alert("Liste boş!");
+    let text = `*Fthlabz Teklif Formu*\n📅 ${new Date().toLocaleDateString()}\n------------------\n`;
     let grandTotal = 0;
-
     billList.forEach(item => {
         grandTotal += item.total;
-        text += `🔹 ${item.name} (${item.qty} x ${item.desc})\n   Tutar: ${formatMoney(item.total)}\n`;
+        text += `🔹 ${item.name}\n   ${item.qty} Adet x ${item.fullUnit} | ${formatMoney(item.total)}\n`;
     });
-
     text += `------------------\n*GENEL TOPLAM: ${formatMoney(grandTotal)}*`;
-    text += `\n\n_Bu teklif Fthlabz Cloud sistemi ile hazırlanmıştır._`;
-
-    // WhatsApp Linki (Mobilde uygulamayı, PC'de web'i açar)
-    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
-    window.open(url, '_blank');
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
 }
 
 window.printOffer = function() {
@@ -318,14 +259,10 @@ window.printOffer = function() {
     window.print();
 }
 
-// Yardımcı Fonksiyonlar
 function switchPage(pageId) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    
     document.getElementById(pageId).classList.add('active');
-    
-    // Aktif butonu boya
     if(pageId === 'page-calc') document.getElementById('nav-calc').classList.add('active');
     if(pageId === 'page-data') document.getElementById('nav-data').classList.add('active');
 }
@@ -336,8 +273,5 @@ function formatMoney(amount) {
 
 function updateStatus(msg, type) {
     const el = document.getElementById('statusBadge');
-    if(el) {
-        el.innerText = msg;
-        el.className = 'status-badge ' + type;
-    }
+    if(el) { el.innerText = msg; el.className = 'status-badge ' + type; }
 }

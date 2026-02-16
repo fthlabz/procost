@@ -5,7 +5,7 @@
 // GÜVENLİK: Token'ı iki parça halinde yazıyoruz ki GitHub otomatik silmesin.
 const token_part_1 = "ghp_"; 
 // AŞAĞIYA KENDİ GİZLİ KODUNUN GERİ KALANINI YAPIŞTIR:
-const token_part_2 = "BURAYA_GIZLI_KODUNU_YAZ"; 
+const token_part_2 = "P0M8pwZh09kDuOWAhVLM83ehoaRetk3geQvf"; 
 
 const CONFIG = {
     USER: "fthlabz",      // Senin Kullanıcı Adın

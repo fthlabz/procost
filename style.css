@@ -273,3 +273,61 @@ button:disabled { opacity: 0.6; cursor: not-allowed; }
     #page-calc { display: block !important; }
     .del-item { display: none; }
 }
+
+/* --- YENİ TEKLİF LİSTESİ TASARIMI (SOLDA SİLME BUTONU) --- */
+
+.bill-item {
+    display: flex;
+    align-items: center; /* Dikey ortala */
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
+    gap: 15px; /* Elemanlar arası boşluk */
+}
+.bill-item:last-child { border-bottom: none; }
+
+/* 1. En Soldaki Silme Butonu */
+.del-btn-start {
+    width: 40px;
+    height: 40px;
+    background: rgba(239, 68, 68, 0.15); /* Hafif Kırmızı Zemin */
+    color: var(--danger);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0; /* Asla büzüşmesin */
+    transition: 0.2s;
+}
+.del-btn-start:active { transform: scale(0.90); background: rgba(239, 68, 68, 0.3); }
+
+/* 2. Ortadaki Bilgi Alanı (İsim ve Adet) */
+.bill-info {
+    flex: 1; /* Kalan tüm boşluğu kapla */
+}
+.bill-info b {
+    display: block;
+    color: white;
+    font-size: 1.05rem;
+    margin-bottom: 3px;
+}
+.bill-info span {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* 3. Sağdaki Fiyat */
+.bill-price {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--neon);
+    text-align: right;
+    white-space: nowrap; /* Alt satıra inmesin */
+}
+
+/* Yazdırma Modunda Silme Butonunu Gizle */
+@media print {
+    .del-btn-start { display: none; }
+}
+

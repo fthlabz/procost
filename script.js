@@ -217,25 +217,34 @@ function renderBill() {
         grandEl.innerText = "0.00 ₺";
         return;
     }
+
     container.innerHTML = "";
     let grandTotal = 0;
+
     billList.forEach((item, index) => {
         grandTotal += item.total;
+        
         const div = document.createElement('div');
         div.className = 'bill-item';
-        // FİŞ TASARIMI
+        
+        // YENİ YAPI: [SİL] - [BİLGİ] - [FİYAT]
         div.innerHTML = `
-            <div class="bill-item-left">
+            <div class="del-btn-start" onclick="removeFromBill(${index})">
+                <i class="fa-solid fa-trash"></i>
+            </div>
+            
+            <div class="bill-info">
                 <b>${item.name}</b>
                 <span>${item.qty} Adet (${item.fullUnit})</span>
             </div>
-            <div class="bill-item-right">
-                <div class="price">${formatMoney(item.total)}</div>
-                <div class="del-item" onclick="removeFromBill(${index})"><i class="fa-solid fa-trash"></i></div>
+
+            <div class="bill-price">
+                ${formatMoney(item.total)}
             </div>
         `;
         container.appendChild(div);
     });
+
     grandEl.innerText = formatMoney(grandTotal);
 }
 

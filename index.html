@@ -18,9 +18,7 @@
     </header>
 
     <main>
-        
         <div id="page-calc" class="page active">
-            
             <div class="card">
                 <label class="label-tiny">ÜRÜN SEÇİN</label>
                 <select id="productSelect" class="input-big">
@@ -33,12 +31,12 @@
                         <span id="dispPrice" class="value-text">0.00 ₺</span>
                     </div>
                     <div class="info-item">
-                        <span class="label-tiny">ÖZELLİK/BİRİM</span>
-                        <span id="dispDesc" class="value-text">-</span>
+                        <span class="label-tiny">ÜRÜN ÖZELLİĞİ</span>
+                        <span id="dispUnit" class="value-text">-</span>
                     </div>
                 </div>
 
-                <label class="label-tiny" style="margin-top:10px;">MİKTAR (ADET/METRE)</label>
+                <label class="label-tiny" style="margin-top:10px;">MİKTAR (ADET/TANE)</label>
                 <div class="input-row">
                     <input type="number" id="qtyInput" placeholder="0" class="input-big text-center">
                     <button id="addBtn" class="btn-primary"><i class="fa-solid fa-plus"></i> EKLE</button>
@@ -53,46 +51,58 @@
                     <h3>TEKLİF LİSTESİ</h3>
                     <button onclick="clearBill()" class="btn-text-danger">Temizle</button>
                 </div>
-                
                 <div id="billList" class="bill-list">
-                    <div class="empty-state">Liste boş. Ürün ekleyin.</div>
+                    <div class="empty-state">Liste boş.</div>
                 </div>
-
                 <div class="grand-total-box">
                     <span>TOPLAM TUTAR</span>
                     <span id="grandTotal">0.00 ₺</span>
                 </div>
-
                 <div class="share-actions">
-                    <button onclick="shareWhatsapp()" class="btn-whatsapp">
-                        <i class="fa-brands fa-whatsapp"></i> WhatsApp Gönder
-                    </button>
-                    <button onclick="printOffer()" class="btn-print">
-                        <i class="fa-solid fa-print"></i> PDF / Yazdır
-                    </button>
+                    <button onclick="shareWhatsapp()" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> WhatsApp Gönder</button>
+                    <button onclick="printOffer()" class="btn-print"><i class="fa-solid fa-print"></i> PDF / Yazdır</button>
                 </div>
             </div>
         </div>
 
         <div id="page-data" class="page">
             <div class="card">
-                <h2><i class="fa-solid fa-database"></i> Veri Tabanı (data.json)</h2>
-                <p class="desc-text">Buradan eklediğin ürünler GitHub'a anında kaydedilir ve tüm cihazlarında güncellenir.</p>
+                <h2><i class="fa-solid fa-database"></i> Veri Tabanı</h2>
                 
                 <div class="form-grid">
-                    <div class="form-group">
-                        <label>Ürün Adı</label>
-                        <input type="text" id="dbName" placeholder="Örn: Çimento">
-                    </div>
-                    <div class="form-group">
-                        <label>Özellik (Birim)</label>
-                        <input type="text" id="dbDesc" placeholder="Örn: 25 KG">
-                    </div>
                     <div class="form-group full">
-                        <label>Fiyat (₺)</label>
+                        <label>Ürün Adı</label>
+                        <input type="text" id="dbName" placeholder="Örn: Çimento, Kablo...">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Değer (Sayı)</label>
+                        <input type="number" id="dbVal" placeholder="Örn: 25, 100, 1..." step="0.1">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Birim Tipi</label>
+                        <select id="dbType" class="input-select">
+                            <option value="KG">KG (Kilogram)</option>
+                            <option value="m²">m² (Metrekare)</option>
+                            <option value="Metre">Metre</option>
+                            <option value="Adet">Adet</option>
+                            <option value="Litre">Litre</option>
+                            <option value="cm">cm (Santim)</option>
+                            <option value="mm">mm (Milim)</option>
+                            <option value="m³">m³ (Metreküp)</option>
+                            <option value="Paket">Paket</option>
+                            <option value="Çuval">Çuval</option>
+                            <option value="Saat">Saat</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full">
+                        <label>Bu Birimin Fiyatı (₺)</label>
                         <input type="number" id="dbPrice" placeholder="0.00">
                     </div>
                 </div>
+
                 <button onclick="saveToCloudDb()" id="saveBtn" class="btn-success">
                     <i class="fa-solid fa-cloud-arrow-up"></i> KAYDET & GÜNCELLE
                 </button>
@@ -103,18 +113,11 @@
                 <ul id="dbListUi" class="db-list"></ul>
             </div>
         </div>
-
     </main>
 
     <nav class="bottom-nav">
-        <button onclick="switchPage('page-calc')" class="nav-btn active" id="nav-calc">
-            <i class="fa-solid fa-calculator"></i>
-            <span>Hesapla</span>
-        </button>
-        <button onclick="switchPage('page-data')" class="nav-btn" id="nav-data">
-            <i class="fa-solid fa-server"></i>
-            <span>Veri Girişi</span>
-        </button>
+        <button onclick="switchPage('page-calc')" class="nav-btn active" id="nav-calc"><i class="fa-solid fa-calculator"></i><span>Hesapla</span></button>
+        <button onclick="switchPage('page-data')" class="nav-btn" id="nav-data"><i class="fa-solid fa-server"></i><span>Veri Girişi</span></button>
     </nav>
 
     <script src="script.js"></script>

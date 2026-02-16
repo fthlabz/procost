@@ -3,7 +3,7 @@
 // =========================================================
 
 const token_part_1 = "ghp_"; 
-// BURAYA KENDİ GİZLİ KODUNU YAZ:
+// SENİN GİZLİ KODUN BURADA:
 const token_part_2 = "P0M8pwZh09kDuOWAhVLM83ehoaRetk3geQvf"; 
 
 const CONFIG = {
@@ -49,7 +49,7 @@ async function fetchFromCloud() {
     }
 }
 
-// GITHUB'A KAYDET (TAM İSTEDİĞİN GİBİ)
+// GITHUB'A KAYDET
 async function saveToCloudDb() {
     const btn = document.getElementById('saveBtn');
     const originalText = btn.innerHTML;
@@ -62,19 +62,20 @@ async function saveToCloudDb() {
     const type = document.getElementById('dbType').value; // Örn: KG
     const price = parseFloat(document.getElementById('dbPrice').value);
 
+    // EKSİK BİLGİ KONTROLÜ
     if(!name || !price || !val) {
-        alert("Lütfen tüm alanları doldurun!");
+        alert("Eksik bilgi! Lütfen Ürün Adı, Değer ve Fiyat alanlarını doldurun.");
         btn.innerHTML = originalText;
         btn.disabled = false;
         return;
     }
 
-    // Listeye ekle: Artık "25" ve "KG" ayrı ayrı tutuluyor ama birleşik de kullanılabilecek
+    // Listeye ekle
     productDb.push({
         id: Date.now(),
         name: name,
-        val: val,    // Sayısal Değer (25)
-        type: type,  // Birim Tipi (KG)
+        val: val,
+        type: type,
         price: price
     });
 
@@ -97,7 +98,6 @@ async function saveToCloudDb() {
             document.getElementById('dbName').value = "";
             document.getElementById('dbVal').value = "";
             document.getElementById('dbPrice').value = "";
-            // dbType'ı sıfırlamaya gerek yok, son seçilen kalabilir veya Adet'e dönebilir.
             
             renderDropdown();
             renderDbList();
@@ -117,20 +117,18 @@ function renderDropdown() {
     productDb.forEach((prod, index) => {
         const opt = document.createElement('option');
         opt.value = index;
-        // GÖRÜNÜM: Çimento (25 KG)
         opt.text = `${prod.name} (${prod.val} ${prod.type})`; 
         select.appendChild(opt);
     });
 }
 
-// KAYIT LİSTESİ
+// VERİTABANI LİSTESİ (AYARLAR KISMI)
 function renderDbList() {
     const list = document.getElementById('dbListUi');
     list.innerHTML = "";
     productDb.forEach((prod, index) => {
         const li = document.createElement('li');
         li.className = 'db-item';
-        // LİSTE GÖRÜNÜMÜ: Çimento | 25 KG | 300 TL
         li.innerHTML = `
             <div>
                 <strong>${prod.name}</strong> <span style="color:#888">(${prod.val} ${prod.type})</span><br>
@@ -162,7 +160,7 @@ async function deleteFromDb(index) {
     }
 }
 
-// HESAPLAMA MANTIĞI
+// HESAPLAMA VE EKLEME
 const productSelect = document.getElementById('productSelect');
 const qtyInput = document.getElementById('qtyInput');
 
@@ -171,7 +169,6 @@ productSelect.addEventListener('change', () => {
     if(idx !== "") {
         const p = productDb[idx];
         document.getElementById('dispPrice').innerText = formatMoney(p.price);
-        // EKRANA YAZ: "25 KG"
         document.getElementById('dispUnit').innerText = `${p.val} ${p.type}`;
         calcLine();
     }
@@ -191,13 +188,13 @@ function calcLine() {
 document.getElementById('addBtn').addEventListener('click', () => {
     const idx = productSelect.value;
     const qty = parseFloat(qtyInput.value);
-    if(idx === "" || !qty) return alert("Eksik bilgi!");
+    if(idx === "" || !qty) return alert("Lütfen Ürün ve Miktar Seçin!");
 
     const p = productDb[idx];
     
     billList.push({
         name: p.name,
-        fullUnit: `${p.val} ${p.type}`, // Fişte: 25 KG
+        fullUnit: `${p.val} ${p.type}`, 
         price: p.price,
         qty: qty,
         total: p.price * qty
@@ -208,6 +205,7 @@ document.getElementById('addBtn').addEventListener('click', () => {
     document.getElementById('lineTotal').innerText = "0.00 ₺";
 });
 
+// --- İŞTE DÜZELTİLEN YER: SİLME BUTONU EN SOLDA ---
 function renderBill() {
     const container = document.getElementById('billList');
     const grandEl = document.getElementById('grandTotal');
@@ -227,7 +225,7 @@ function renderBill() {
         const div = document.createElement('div');
         div.className = 'bill-item';
         
-        // YENİ YAPI: [SİL] - [BİLGİ] - [FİYAT]
+        // HTML SIRASI: [SOL: SİL] - [ORTA: BİLGİ] - [SAĞ: FİYAT]
         div.innerHTML = `
             <div class="del-btn-start" onclick="removeFromBill(${index})">
                 <i class="fa-solid fa-trash"></i>

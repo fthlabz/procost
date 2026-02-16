@@ -12,5 +12,12 @@
     "val": "1000",
     "type": "KG",
     "price": 3500
+  },
+  {
+    "id": 1771254048908,
+    "name": "Tuğla ",
+    "val": "1",
+    "type": "Adet",
+    "price": 2
   }
 ]

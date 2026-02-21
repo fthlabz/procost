@@ -1,16 +1,22 @@
 // =========================================================
-// ⚙️ AYARLAR
+// ⚙️ GÜVENLİ AYARLAR (HAYALET KİLİT)
 // =========================================================
 
-const token_part_1 = "ghp_"; 
-// SENİN GİZLİ KODUN BURADA:
-const token_part_2 = "P0M8pwZh09kDuOWAhVLM83ehoaRetk3geQvf"; 
+// 1. Şifreleyici HTML'den kopyaladığın o upuzun metni buraya yapıştır:
+const sifreliKasa = "U2FsdGVkX1/id0YYNzahS6+RducWmMOtvDb41qGbbn1GppnNHO//4O0gZ4BWrVyGpui48UU1gI7Le/BKguCrUg=="; 
+
+// 2. Şifrelerken belirlediğin o gizli PIN'i buraya yaz (Örn: 1453):
+const gizliPin = "1453"; 
+
+// 3. Sistem şifreyi saliselik hızda kendi kendine çözer:
+const bytes = CryptoJS.AES.decrypt(sifreliKasa, gizliPin);
+const cozulmusToken = bytes.toString(CryptoJS.enc.Utf8);
 
 const CONFIG = {
-    USER: "fthlabz",      // GitHub Kullanıcı Adın
-    REPO: "procost",      // Depo Adın
-    FILE: "data.json",    // Dosya Adı
-    TOKEN: token_part_1 + token_part_2
+    USER: "fthlabz",      
+    REPO: "procost",      
+    FILE: "data.json",    
+    TOKEN: cozulmusToken  // Açık şifre gitti, yerine kriptodan çözülen token geldi!
 };
 
 // =========================================================

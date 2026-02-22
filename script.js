@@ -3,7 +3,7 @@
 // =========================================================
 
 // 1. Şifreleyici HTML'den kopyaladığın o upuzun metni buraya yapıştır:
-const sifreliKasa = "U2FsdGVkX1/id0YYNzahS6+RducWmMOtvDb41qGbbn1GppnNHO//4O0gZ4BWrVyGpui48UU1gI7Le/BKguCrUg=="; 
+const sifreliKasa = "U2FsdGVkX1+7t2QVcXRD4MZ7IB4dNfEcwq0XoGd1hJxU7+ikYTIsCjXZ62ER9D+0S5xGlUfCgZAduY+afvXxXw=="; 
 
 // 2. Şifrelerken belirlediğin o gizli PIN'i buraya yaz (Örn: 1453):
 const gizliPin = "1453"; 

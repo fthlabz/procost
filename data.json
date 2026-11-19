@@ -12,5 +12,12 @@
     "val": "1",
     "type": "KG",
     "price": 50
+  },
+  {
+    "id": 1795127213476,
+    "name": "Kumaş",
+    "val": "50",
+    "type": "Metre",
+    "price": 4.5
   }
 ]
